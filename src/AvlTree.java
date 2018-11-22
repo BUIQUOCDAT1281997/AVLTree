@@ -16,7 +16,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
     private void traversal(AVLNode<T> node) {
         if (node == null) return;
         traversal(node.left);
-        System.out.print(node.data);
+        System.out.println(node.data);
         traversal(node.right);
     }
 
