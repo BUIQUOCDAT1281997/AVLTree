@@ -1,27 +1,20 @@
-import java.util.*;
-
+import java.util.Iterator;
 public class RunAVLTree {
     public static void main(String[] args) {
         AvlTree<Integer> avlTree = new AvlTree<>();
-        avlTree.add(1);
-        avlTree.add(2);
-        avlTree.add(3);
-        avlTree.add(4);
-        avlTree.add(5);
-        avlTree.add(6);
-        avlTree.add(7);
-        avlTree.add(8);
-        avlTree.add(9);
-        avlTree.add(10);
-        avlTree.add(11);
-        SortedSet<Integer> sortedSet = avlTree.subSet(2,10 );
-        Iterator<Integer> it = sortedSet.iterator();
+        avlTree.add(40);
+        avlTree.add(41);
+        avlTree.add(42);
+        avlTree.add(43);
+        avlTree.add(44);
+        avlTree.add(45);
+        avlTree.traverse();
+        Iterator<Integer> it = avlTree.iterator();
+        System.out.println();
         while (it.hasNext()){
-            it.next();
-            it.remove();
+            int i = it.next();
+            if (i==42) it.remove();
         }
-        avlTree.traversal();
-        System.out.println(sortedSet.contains(4));
-
+        avlTree.traverse();
     }
 }

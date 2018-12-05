@@ -2,29 +2,22 @@ import java.util.*;
 
 public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
 
-    private static class AVLNode<T> {
-        private T data;
-        int height = 0;
-        AVLNode<T> left = null;
-        AVLNode<T> right = null;
-
-        AVLNode(T data) {
-            this.data = data;
-        }
-    }
-
-    private void traversal(AVLNode<T> node) {
+    private void traverse(AVLNode<T> node) {
         if (node == null) return;
-        traversal(node.left);
-        System.out.println(node.data);
-        traversal(node.right);
+        System.out.print(node.data + " ");
+        traverse(node.left);
+        traverse(node.right);
     }
 
-    public void traversal() {
-        traversal(root);
+    public void traverse() {
+        traverse(root);
     }
 
     private AVLNode<T> root = null;
+
+    public AVLNode<T> getRoot() {
+        return root;
+    }
 
     private int size = 0;
 
@@ -41,6 +34,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         return findNode(root, data);
     }
 
+    // Найти node, значение которого (data) равно T или близко к T
     private AVLNode<T> findNode(AVLNode<T> start, T data) {
         int comparison = data.compareTo(start.data);
         if (comparison == 0) {
@@ -92,6 +86,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         return true;
     }
 
+    // добавлять node в дерево и осуществовать баланс
     private AVLNode<T> insertNode(AVLNode<T> currentNode, T dataToInsert) {
         if (currentNode == null) {
             return new AVLNode<>(dataToInsert);
@@ -101,24 +96,26 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         } else {
             currentNode.right = insertNode(currentNode.right, dataToInsert);
         }
-        currentNode = balanceTree(currentNode, dataToInsert);
+        currentNode = balanceTree(currentNode, dataToInsert); // осуществовать баланс
 
-        currentNode.height = calculateTreeHeight(currentNode);
+        currentNode.height = calculateTreeHeight(currentNode); // вычислить рост нового узла
 
         return currentNode;
     }
 
     private int height(AVLNode<T> currentNode) {
         if (currentNode == null) {
-            return -1;
+            return -1; // определение пустого роста
         }
         return currentNode.height;
     }
 
+    // вычислить роста currentNode
     private int calculateTreeHeight(AVLNode<T> currentNode) {
         return Math.max(height(currentNode.left), height(currentNode.right)) + 1;
     }
 
+    // С помошью этого метода мы получим целое число, из которого мы узнали различие между сынами
     private int getBalanceValue(AVLNode<T> currentNode) {
         if (currentNode == null) {
             return 0;
@@ -126,28 +123,36 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         return height(currentNode.left) - height(currentNode.right);
     }
 
+    // проверка правой расбалансировки
     private boolean isRightHeavy(AVLNode<T> currentNode) {
         return getBalanceValue(currentNode) < -1;
     }
 
+    // проверка левой расбалансировки
     private boolean isLeftHeavy(AVLNode<T> currentNode) {
         return getBalanceValue(currentNode) > 1;
     }
 
+    // Расстановка балансов при добавления
     private AVLNode<T> balanceTree(AVLNode<T> currentNode, T dataToInsert) {
+
+        // Тип расбалансировки- это right - right
         if (isRightHeavy(currentNode) && dataToInsert.compareTo(currentNode.right.data) > 0) {
             return leftRotate(currentNode);
         }
 
+        // Тип расбалансировки- это left - left
         if (isLeftHeavy(currentNode) && dataToInsert.compareTo(currentNode.left.data) < 0) {
             return rightRotate(currentNode);
         }
 
+        // Тип расбалансировки- это right - left
         if (isRightHeavy(currentNode) && dataToInsert.compareTo(currentNode.right.data) < 0) {
             currentNode.right = rightRotate(currentNode.right);
             return leftRotate(currentNode);
         }
 
+        // Тип расбалансировки- это left - right
         if (isLeftHeavy(currentNode) && dataToInsert.compareTo(currentNode.left.data) > 0) {
             currentNode.left = leftRotate(currentNode.left);
             return rightRotate(currentNode);
@@ -156,9 +161,11 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         return currentNode;
     }
 
+    // Расстановка балансов при удалении
     private AVLNode<T> balanceTree(AVLNode<T> current) {
         int balance = getBalanceValue(current);
 
+        // левая расбалансировка
         if (balance > 1) {
             if (getBalanceValue(current.left) < 0) {
                 current.left = leftRotate(current.left);
@@ -166,6 +173,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
             return rightRotate(current);
         }
 
+        // правая расбалансировка
         if (balance < -1) {
             if (getBalanceValue(current.right) > 0) {
                 current.right = rightRotate(current.right);
@@ -175,6 +183,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         return current;
     }
 
+    // Метод правого поворота вокруг currentNode
     private AVLNode<T> rightRotate(AVLNode<T> currentNode) {
         AVLNode<T> newRootNode = currentNode.left;
         currentNode.left = newRootNode.right;
@@ -182,6 +191,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         return newRootNode;
     }
 
+    // Метод левого поворота вокруг currentNode
     private AVLNode<T> leftRotate(AVLNode<T> currentNode) {
         AVLNode<T> newRootNode = currentNode.right;
         currentNode.right = newRootNode.left;
@@ -257,31 +267,31 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
 
         private List<AVLNode<T>> list;
 
-        private T toElement , fromElement;
+        private T toElement, fromElement;
 
         private AvlTreeIterator() {
             list = new ArrayList<>();
             addToList(root);
         }
 
-        private AvlTreeIterator(T toElement, T fromElement){
+        private AvlTreeIterator(T toElement, T fromElement) {
             list = new ArrayList<>();
             this.toElement = toElement;
             this.fromElement = fromElement;
             addToSubList(root);
         }
 
-        private void addToSubList(AVLNode<T> node){
-            if (node!= null){
+        private void addToSubList(AVLNode<T> node) {
+            if (node != null) {
                 addToSubList(node.left);
-                if (inRange(node.data)){
+                if (inRange(node.data)) {
                     list.add(node);
                 }
                 addToSubList(node.right);
             }
         }
 
-        private boolean inRange(T t){
+        private boolean inRange(T t) {
             if (toElement != null && fromElement != null) {
                 return t.compareTo(toElement) > 0 && t.compareTo(fromElement) < 0;
             } else if (toElement == null) {
@@ -315,8 +325,8 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
 
         @Override
         public void remove() {
-            AvlTree.this.remove(list.get(location - 1).data);
-            list.remove(list.get(location - 1));
+            AvlTree.this.remove(current.data);
+            list.remove(current);
             location--;
         }
     }
@@ -326,7 +336,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         return new AvlTreeIterator();
     }
 
-    private Iterator<T> iterator(T toElement, T fromElement){
+    private Iterator<T> iterator(T toElement, T fromElement) {
         return new AvlTreeIterator(toElement, fromElement);
     }
 
@@ -393,8 +403,8 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean b = false;
-        for (Object e : c){
-            if (this.contains(e)){
+        for (Object e : c) {
+            if (this.contains(e)) {
                 this.remove(e);
                 b = true;
             }
@@ -405,7 +415,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
     @Override
     public void clear() {
         Iterator<T> iterator = this.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             iterator.next();
             iterator.remove();
         }
@@ -414,6 +424,25 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
     @Override
     public Comparator<? super T> comparator() {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj instanceof Set) {
+            Set<?> o = (AvlTree<?>) obj;
+            return o.size() == this.size() && o.containsAll(this) && this.containsAll(o);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hCode = 0;
+        for (T current : this) {
+            hCode += current.hashCode();
+        }
+        return hCode;
     }
 
     static final class ImpSortedSet<T extends Comparable<T>> extends AbstractSet<T> implements SortedSet<T> {
@@ -519,7 +548,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         public int size() {
             Iterator<T> it = m.iterator();
             int count = 0;
-            while (it.hasNext()){
+            while (it.hasNext()) {
                 if (contains(it.next())) count++;
             }
             return count;
@@ -527,7 +556,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
 
         @Override
         public Iterator<T> iterator() {
-            return m.iterator(lo,hi);
+            return m.iterator(lo, hi);
         }
 
         @Override
