@@ -4,7 +4,7 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
 
     private void traverse(AVLNode<T> node) {
         if (node == null) return;
-        System.out.print(node.data + " ");
+        System.out.print(node + " -> ");
         traverse(node.left);
         traverse(node.right);
     }
@@ -188,6 +188,8 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         AVLNode<T> newRootNode = currentNode.left;
         currentNode.left = newRootNode.right;
         newRootNode.right = currentNode;
+        newRootNode.height = calculateTreeHeight(newRootNode);
+        currentNode.height = calculateTreeHeight(currentNode);
         return newRootNode;
     }
 
@@ -196,6 +198,8 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         AVLNode<T> newRootNode = currentNode.right;
         currentNode.right = newRootNode.left;
         newRootNode.left = currentNode;
+        newRootNode.height = calculateTreeHeight(newRootNode);
+        currentNode.height = calculateTreeHeight(currentNode);
         return newRootNode;
     }
 
@@ -263,31 +267,37 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
 
         private AVLNode<T> current = null;
 
-        private int location = 0;
-
-        private List<AVLNode<T>> list;
+        private Stack<AVLNode<T>> stack;
 
         private T toElement, fromElement;
 
         private AvlTreeIterator() {
-            list = new ArrayList<>();
-            addToList(root);
+            stack = new Stack<>();
+            addToStack(root);
         }
 
         private AvlTreeIterator(T toElement, T fromElement) {
-            list = new ArrayList<>();
+            stack = new Stack<>();
             this.toElement = toElement;
             this.fromElement = fromElement;
-            addToSubList(root);
+            addToStackWithLimits(root);
         }
 
-        private void addToSubList(AVLNode<T> node) {
+        private void addToStack(AVLNode<T> node) {
             if (node != null) {
-                addToSubList(node.left);
+                addToStack(node.right);
+                stack.push(node);
+                addToStack(node.left);
+            }
+        }
+
+        private void addToStackWithLimits(AVLNode<T> node) {
+            if (node != null) {
+                addToStackWithLimits(node.right);
                 if (inRange(node.data)) {
-                    list.add(node);
+                    stack.add(node);
                 }
-                addToSubList(node.right);
+                addToStackWithLimits(node.left);
             }
         }
 
@@ -299,21 +309,13 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
             } else return t.compareTo(toElement) >= 0;
         }
 
-        private void addToList(AVLNode<T> node) {
-            if (node != null) {
-                addToList(node.left);
-                list.add(node);
-                addToList(node.right);
-            }
-        }
-
         private AVLNode<T> findNext() {
-            return list.get(location++);
+            return stack.pop();
         }
 
         @Override
         public boolean hasNext() {
-            return location < list.size();
+            return !stack.empty();
         }
 
         @Override
@@ -326,8 +328,6 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         @Override
         public void remove() {
             AvlTree.this.remove(current.data);
-            list.remove(current);
-            location--;
         }
     }
 
@@ -443,6 +443,19 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
             hCode += current.hashCode();
         }
         return hCode;
+    }
+
+    @Override
+    public String toString() {
+        if (isEmpty()) {
+            return "AVLTree is empty";
+        } else {
+            StringBuilder result = new StringBuilder("This is AVLTree. It contains elements:");
+            for (T t : this) {
+                result.append(" ").append(t);
+            }
+            return result.toString();
+        }
     }
 
     static final class ImpSortedSet<T extends Comparable<T>> extends AbstractSet<T> implements SortedSet<T> {

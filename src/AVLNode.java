@@ -7,4 +7,9 @@ public class AVLNode<T extends Comparable<T>> {
     AVLNode(T data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "AVLNode(data=" + this.data + ")";
+    }
 }

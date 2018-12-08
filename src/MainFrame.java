@@ -8,8 +8,10 @@ public class MainFrame extends JFrame {
     private JPanel optionPanel;
     private Board board;
 
+    private String elements = "BINARY AVLTREE";
+
     private void initMainPanel() {
-        board = new Board((int) ((this.getWidth() - 200) / 2 - 17.5), 10);
+        board = new Board((int) ((this.getWidth() - 200) / 2 - 17.5), 15);
         board.setBackground(new Color(193, 191, 188));
         board.setBorder(new LineBorder(new Color(48, 56, 58), 2));
         this.add(board, BorderLayout.CENTER);
@@ -28,7 +30,7 @@ public class MainFrame extends JFrame {
 
     private void showWarring() {
         JOptionPane.showOptionDialog(this,
-                "You can only enter integers", "WARRING", JOptionPane.OK_CANCEL_OPTION,
+                elements, "WARRING", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.INFORMATION_MESSAGE, null, null, "default");
     }
 
@@ -43,7 +45,8 @@ public class MainFrame extends JFrame {
         JTextField textInsert = new JTextField(10);
         radioPanel.add(textInsert);
         ActionListener actionListener = e -> {
-            if (!textInsert.getText().matches("[0-9]+")) {
+            if (!textInsert.getText().matches("-?[0-9]+")) {
+                elements = "You can only enter integers";
                 this.showWarring();
                 return;
             }
@@ -65,7 +68,8 @@ public class MainFrame extends JFrame {
         JTextField textRemove = new JTextField(10);
         removePanel.add(textRemove);
         ActionListener listener = e -> {
-            if (!textRemove.getText().matches("[0-9]+")) {
+            if (!textRemove.getText().matches("-?[0-9]+")) {
+                elements = "You can only enter integers";
                 this.showWarring();
                 return;
             }
@@ -79,29 +83,19 @@ public class MainFrame extends JFrame {
 
         JPanel travelPanel = new JPanel();
         travelPanel.setBorder(new LineBorder(Color.BLACK, 1));
-        travelPanel.setPreferredSize(new Dimension(150, 100));
+        travelPanel.setPreferredSize(new Dimension(150, 70));
         travelPanel.setBackground(new Color(249, 175, 57));
         travelPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JLabel travel = new JLabel("TRAVEL");
+        JLabel travel = new JLabel("PRINT TREE");
         travelPanel.add(travel);
-        JTextField textTravel = new JTextField(10);
-        travelPanel.add(textTravel);
+        ActionListener aL = e -> {
+            elements = board.toString();
+            this.showWarring();
+        };
         JButton buttonTravel = new JButton("summit");
+        buttonTravel.addActionListener(aL);
         travelPanel.add(buttonTravel);
         optionPanel.add(travelPanel);
-
-        JPanel infPanel = new JPanel();
-        infPanel.setBorder(new LineBorder(Color.BLACK, 1));
-        infPanel.setPreferredSize(new Dimension(150, 100));
-        infPanel.setBackground(new Color(249, 175, 57));
-        infPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JLabel inf = new JLabel("INFORMATION");
-        infPanel.add(inf);
-        JTextField textInf = new JTextField(10);
-        infPanel.add(textInf);
-        JButton buttonInf = new JButton("summit");
-        infPanel.add(buttonInf);
-        optionPanel.add(infPanel);
     }
 
     private void initOptionPanel() {
@@ -125,7 +119,7 @@ public class MainFrame extends JFrame {
 
     private MainFrame(String s) {
         super(s);
-        setSize(1200, 1000);
+        setSize(1200, 800);
         this.setLayout(new BorderLayout());
         initMainPanel();
         initHeadPanel();
