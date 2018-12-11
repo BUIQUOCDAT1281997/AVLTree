@@ -2,17 +2,6 @@ import java.util.*;
 
 public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
 
-    private void traverse(AVLNode<T> node) {
-        if (node == null) return;
-        System.out.print(node + " -> ");
-        traverse(node.left);
-        traverse(node.right);
-    }
-
-    public void traverse() {
-        traverse(root);
-    }
-
     private AVLNode<T> root = null;
 
     public AVLNode<T> getRoot() {
@@ -267,37 +256,39 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
 
         private AVLNode<T> current = null;
 
-        private Stack<AVLNode<T>> stack;
+        private int location = 0;
+
+        private List<AVLNode<T>> list;
 
         private T toElement, fromElement;
 
         private AvlTreeIterator() {
-            stack = new Stack<>();
-            addToStack(root);
+            list = new ArrayList<>();
+            addToList(root);
         }
 
         private AvlTreeIterator(T toElement, T fromElement) {
-            stack = new Stack<>();
+            list = new ArrayList<>();
             this.toElement = toElement;
             this.fromElement = fromElement;
-            addToStackWithLimits(root);
+            addToListWithLimits(root);
         }
 
-        private void addToStack(AVLNode<T> node) {
+        private void addToList(AVLNode<T> node) {
             if (node != null) {
-                addToStack(node.right);
-                stack.push(node);
-                addToStack(node.left);
+                addToList(node.left);
+                list.add(node);
+                addToList(node.right);
             }
         }
 
-        private void addToStackWithLimits(AVLNode<T> node) {
+        private void addToListWithLimits(AVLNode<T> node) {
             if (node != null) {
-                addToStackWithLimits(node.right);
+                addToListWithLimits(node.left);
                 if (inRange(node.data)) {
-                    stack.add(node);
+                    list.add(node);
                 }
-                addToStackWithLimits(node.left);
+                addToListWithLimits(node.right);
             }
         }
 
@@ -310,12 +301,12 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         }
 
         private AVLNode<T> findNext() {
-            return stack.pop();
+            return list.get(location++);
         }
 
         @Override
         public boolean hasNext() {
-            return !stack.empty();
+            return location < list.size();
         }
 
         @Override
@@ -328,6 +319,8 @@ public class AvlTree<T extends Comparable<T>> implements SortedSet<T> {
         @Override
         public void remove() {
             AvlTree.this.remove(current.data);
+            list.remove(current);
+            location--;
         }
     }
 

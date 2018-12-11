@@ -9,6 +9,5 @@ public class RunAVLTree {
         avlTree.add(44);
         avlTree.add(45);
         System.out.println(avlTree.toString());
-        avlTree.traverse();
     }
 }
