@@ -53,7 +53,7 @@ public class MainFrame extends JFrame {
             board.insertNode(Integer.parseInt(textInsert.getText()));
             repaint();
         };
-        JButton buttonInsert = new JButton("summit");
+        JButton buttonInsert = new JButton("Commit");
         buttonInsert.addActionListener(actionListener);
         radioPanel.add(buttonInsert);
         optionPanel.add(radioPanel);
@@ -76,7 +76,7 @@ public class MainFrame extends JFrame {
             board.removeNode(Integer.parseInt(textRemove.getText()));
             repaint();
         };
-        JButton buttonRemove = new JButton("summit");
+        JButton buttonRemove = new JButton("Commit");
         buttonRemove.addActionListener(listener);
         removePanel.add(buttonRemove);
         optionPanel.add(removePanel);
@@ -92,7 +92,7 @@ public class MainFrame extends JFrame {
             elements = board.toString();
             this.showWarring();
         };
-        JButton buttonTravel = new JButton("summit");
+        JButton buttonTravel = new JButton("Commit");
         buttonTravel.addActionListener(aL);
         travelPanel.add(buttonTravel);
         optionPanel.add(travelPanel);
